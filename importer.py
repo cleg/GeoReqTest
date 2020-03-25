@@ -9,7 +9,7 @@ def _main():
     query = "INSERT INTO \"public\".\"_CITIES\" (\"name\", \"lat\", \"long\", \"region\") " \
             "VALUES (%s, %s, %s, %s)"
 
-    conn = connect(host='localhost', user='', password='', database='geotest')
+    conn = connect(host='localhost', user=DB_USER, password=DB_PASS, database='geotest')
 
     with conn.cursor() as cursor:
         with open("allCountries.txt") as in_f:

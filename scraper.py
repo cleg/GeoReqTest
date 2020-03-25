@@ -4,9 +4,7 @@ from json import loads
 from psycopg2 import connect
 from requests import get
 
-# 4SQ API Keys
-_CLIENT_ID = ""
-_CLIENT_SECRET = ""
+from constants import FOURSQ_CLIENT_ID, FOURSQ_CLIENT_SECRET, DB_PASS, DB_USER
 
 
 _CITIES = {
@@ -39,8 +37,8 @@ class Venue:
 def get_page(lat: float, lng: float) -> [Venue]:
     url = 'https://api.foursquare.com/v2/venues/search'
     params = {
-        "client_id": _CLIENT_ID,
-        "client_secret": _CLIENT_SECRET,
+        "client_id": FOURSQ_CLIENT_ID,
+        "client_secret": FOURSQ_CLIENT_SECRET,
         "ll": f"{lat},{lng}",
         "radius": 20000,
         "categoryId": "4bf58dd8d48988d1ca941735",
@@ -94,7 +92,7 @@ def _add_cities(connection):
 
 
 def _main():
-    conn = connect(host='localhost', user='', password='', database='geotest')
+    conn = connect(host='localhost', user=DB_USER, password=DB_PASS, database='geotest')
     cursor = conn.cursor()
     cursor.execute("TRUNCATE TABLE pizzerias;")
     cursor.execute("TRUNCATE TABLE cities_min")

@@ -1,2 +1,4 @@
 .idea
 allCountries.txt
+constants.py
+__pycache__
