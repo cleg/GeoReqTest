@@ -5,9 +5,32 @@ FROM cities;
 
 
 
+-- Index
+CREATE INDEX pizzerias_location_idx ON pizzerias USING gist(ll_to_earth(lat,lng));
 
--- First attempt EXPLAIN
-SELECT name, (point(c.lng, c.lat) <@> point(bar_me.lng, bar_me.lat)) * 1609.344 AS distance
+
+
+
+-- Get coordinates
+SELECT * FROM cities WHERE lower(name) = 'bar' AND region = 'ME';
+
+
+
+-- First version, simpler
+SELECT *, (point(lng, lat) <@> point(19.1, 42.1)) * 1609.344 AS distance
+FROM
+	cities
+WHERE
+    (point(lng, lat) <@> point(19.1, 42.1)) < (10000 / 1609.344)
+ORDER BY
+	distance;
+
+
+
+
+
+-- Secont attempt
+EXPLAIN SELECT name, (point(c.lng, c.lat) <@> point(bar_me.lng, bar_me.lat)) * 1609.344 AS distance
 FROM
 	cities c,
 	LATERAL (
@@ -21,29 +44,8 @@ WHERE
 	c.id <> bar_me.id
 	AND (point(c.lng, c.lat) <@> point(bar_me.lng, bar_me.lat)) < (10000/1609.344)
 ORDER BY
-	distance
-LIMIT 100;
-
-
-
--- Get coordinates
-SELECT * FROM cities WHERE lower(name) = 'bar' AND region = 'ME';
-
-
-
--- Second version, simpler
-SELECT *, (point(lng, lat) <@> point(19.1, 42.1)) * 1609.344 AS distance
-FROM
-	cities
-WHERE
-    (point(lng, lat) <@> point(19.1, 42.1)) < (10000 / 1609.344)
-ORDER BY
 	distance;
 
-
-
--- Index
-CREATE INDEX pizzerias_location_idx ON pizzerias USING gist(ll_to_earth(lat,lng));
 
 
 

@@ -11,8 +11,8 @@ def _main():
 
     conn = connect(host='localhost', user=DB_USER, password=DB_PASS, database='geotest')
 
-    with conn.cursor() as cursor:
-        with open("allCountries.txt") as in_f:
+    with open("allCountries.txt") as in_f:
+        with conn.cursor() as cursor:
             csv_reader = reader(in_f, delimiter='\t')
             for num, line in enumerate(csv_reader):
                 ascii_name = line[2]
